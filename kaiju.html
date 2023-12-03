@@ -148,7 +148,7 @@
 
     function loadCharacter() {
         const tokenId = document.getElementById('tokenId').value;
-		const apiUrl = `https://api.raritysniper.com/public/collection/kaijufrenz-genesis/id/${tokenId}`;
+		const apiUrl = `'https://corsproxy.io/?' + encodeURIComponent('https://api.raritysniper.com/public/collection/kaijufrenz-genesis/id/${tokenId})`;
 
         fetch(apiUrl)
             .then(response => response.json())
