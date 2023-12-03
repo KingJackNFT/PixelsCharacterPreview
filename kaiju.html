@@ -180,7 +180,7 @@
 
 	function getTraitValue(traits, traitType) {
 		const trait = traits.find(t => t.traitType === traitType);
-		return trait ? trait.traitValue.replace(/\s/g, '').toLowerCase() : '';
+		return trait ? trait.traitValue.replace(/\s/g, '').replace('-', '').replace('&', '').toLowerCase() : '';
 	}
 </script>
 
