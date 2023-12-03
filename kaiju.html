@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Preview</title>
+    <style>
+        .character-container {
+            position: relative;
+            width: 150px; 
+            height: 150px; 
+			overflow: hidden;
+        }
+
+        .character-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+			width: auto; 
+            height: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+		
+		.form-group2 {
+            margin-bottom: 30px;
+        }
+		
+		.image-container {
+            width: 150px;
+            max-width: 100%;
+            margin: 0 auto; 
+        }
+
+        .image {
+            width: 100%;
+            height: auto; 
+            display: block; 
+            margin: 0 auto; 
+        }
+		
+		.alignL {
+			margin-top: 30px;
+			width: 100%;
+			display: flex;
+			justify-content: left;
+			flex-wrap: wrap;
+		}
+		
+    </style>
+</head>
+<body>
+
+<h2>KaijuFrenz Character Preview</h2>
+
+<div class="form-group">
+    <label for="tokenId">Token ID:</label>
+    <input type="text" id="tokenId" placeholder="Enter Token ID">
+</div>
+
+<div class="form-group2">
+	<button onclick="loadCharacter()">Load Traits</button>
+</div>
+
+<div class="form-group">
+    <label for="spikes">Spikes:</label>
+    <input type="text" id="spikes" placeholder="cloudsspikes" value="cloudsspikes">
+</div>
+
+<div class="form-group">
+    <label for="skin">Skin:</label>
+    <input type="text" id="skin" placeholder="tan" value="tan">
+</div>
+
+<div class="form-group">
+    <label for="clothes">Clothes:</label>
+    <input type="text" id="clothes" placeholder="rainbowhoodie" value="rainbowhoodie">
+</div>
+
+<div class="form-group">
+    <label for="mouth">Mouth:</label>
+    <input type="text" id="mouth" placeholder="bubblepop" value="bubblepop">
+</div>
+
+<div class="form-group">
+    <label for="headgear">Headgear:</label>
+    <input type="text" id="headgear" placeholder="kumoballoon" value="kumoballoon">
+</div>
+
+<div class="form-group">
+    <label for="eyes">Eyes:</label>
+    <input type="text" id="eyes" placeholder="thundereyes" value="thundereyes">
+</div>
+
+<div class="form-group2">
+	<button onclick="updateCharacter()">Load Character</button>
+<div>
+
+<div class="alignL">
+	<div>
+		<div class="image-container" id="nft">
+		</div>
+	</div>
+	<div>
+		<div class="character-container" id="characterContainer">
+		</div>
+	</div>
+</div>
+
+<script>
+    const baseUrl = 'https://d31ss916pli4td.cloudfront.net/game/avatars/kaijufrenz/';
+	let nftURL='';
+	
+    function updateCharacter() {
+        const parts = ['spikes', 'arm', 'skin', 'clothes', 'mouth', 'headgear', 'eyes'];
+        const properties = [
+            document.getElementById('spikes').value.toLowerCase(),
+            document.getElementById('skin').value.toLowerCase(),
+            document.getElementById('skin').value.toLowerCase(),
+            document.getElementById('clothes').value.toLowerCase(),
+            document.getElementById('mouth').value.toLowerCase(),
+            document.getElementById('headgear').value.toLowerCase(),
+            document.getElementById('eyes').value.toLowerCase()
+        ];
+
+        const characterContainer = document.getElementById('characterContainer');
+        characterContainer.innerHTML = ''; 
+		
+		const nftContainer = document.getElementById('nft');
+        nftContainer.innerHTML = ''; 
+
+        parts.forEach((part, index) => {
+            const img = document.createElement('img');
+            img.src = `${baseUrl}${part}/${properties[index]}.png?v2`;
+            img.alt = part;
+            img.className = 'character-layer';
+            characterContainer.appendChild(img);
+        });
+		
+		const nftImg = document.createElement('img');
+		nftImg.src = nftURL;
+		nftImg.alt = "nft";
+		nftImg.className = 'image';
+		nftContainer.appendChild(nftImg);
+    }
+
+    function loadCharacter() {
+        const tokenId = document.getElementById('tokenId').value;
+		const apiUrl = `http://127.0.0.1:8081/https://api.raritysniper.com/public/collection/kaijufrenz-genesis/id/${tokenId}`;
+
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                const traits = data.traits;
+				
+				console.log(traits);
+
+                // Populate textboxes with trait properties
+                document.getElementById('spikes').value = getTraitValue(traits, 'Spikes');
+                document.getElementById('skin').value = getTraitValue(traits, 'Skin');
+                document.getElementById('clothes').value = getTraitValue(traits, 'Clothes');
+                document.getElementById('mouth').value = getTraitValue(traits, 'Mouth');
+                document.getElementById('headgear').value = getTraitValue(traits, 'Headgear');
+                document.getElementById('eyes').value = getTraitValue(traits, 'Eyes');
+            
+				nftURL=data.image;
+			})
+            .catch(error => console.error('Error fetching data:', error));
+    }
+
+	function getTraitValue(traits, traitType) {
+		const trait = traits.find(t => t.traitType === traitType);
+		return trait ? trait.traitValue.replace(/\s/g, '').toLowerCase() : '';
+	}
+</script>
+
+</body>
+</html>
