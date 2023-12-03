@@ -130,11 +130,15 @@
         nftContainer.innerHTML = ''; 
 
         parts.forEach((part, index) => {
-            const img = document.createElement('img');
-            img.src = `${baseUrl}${part}/${properties[index]}.png?v2`;
-            img.alt = part;
-            img.className = 'character-layer';
-            characterContainer.appendChild(img);
+			const propertyValue = properties[index];
+    
+			if (propertyValue) { 
+				const img = document.createElement('img');
+				img.src = `${baseUrl}${part}/${properties[index]}.png?v2`;
+				img.alt = part;
+				img.className = 'character-layer';
+				characterContainer.appendChild(img);
+			}
         });
 		
 		const nftImg = document.createElement('img');
