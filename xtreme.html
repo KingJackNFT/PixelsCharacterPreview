@@ -142,7 +142,7 @@
 	
 	function loadCharacter() {
         const tokenId = document.getElementById('tokenId').value;
-		const apiUrl = `http://127.0.0.1:8081/https://api.nft-stats.com/asset/0x0c9663115b36fa95d18e71d59054117bcb0342ef/${tokenId}`;
+		const apiUrl = `https://corsproxy.io/?https://api.nft-stats.com/asset/0x0c9663115b36fa95d18e71d59054117bcb0342ef/${tokenId}`;
 
         fetch(apiUrl)
             .then(response => response.json())
