@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Preview</title>
+    <style>
+        .character-container {
+            position: relative;
+            width: 150px; 
+            height: 150px; 
+			overflow: hidden;
+        }
+
+        .character-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+			width: auto; 
+            height: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+		
+		.form-group2 {
+            margin-bottom: 30px;
+        }
+		
+        .image-container {
+            width: 150px;
+            max-width: 100%;
+            margin: 0 auto; /* Center the container */
+        }
+
+        .image {
+            width: 100%;
+            height: auto; /* Maintain aspect ratio */
+            display: block; /* Remove extra space below inline images */
+            margin: 0 auto; /* Center the image */
+        }
+		
+		.alignL {
+			margin-top: 30px;
+			width: 100%;
+			display: flex;
+			justify-content: left;
+			flex-wrap: wrap;
+		}
+
+    </style>
+</head>
+<body>
+
+<h2>Subway Rats Character Preview</h2>
+
+<div class="form-group2">
+	<p><strong>Buy KingJack a coffee:<br /></strong><span style="color: #0000ff;">ronin:5158217b452d054d8791d76cbbbb2fa9412b51f7</span></p>
+</div>
+
+<div class="form-group">
+    <label for="tokenId">Token ID:</label>
+    <input type="text" id="tokenId" placeholder="Enter Token ID">
+</div>
+
+<div class="form-group2">
+	<button onclick="loadCharacter()">Load Traits</button>
+</div>
+
+<div class="form-group">
+    <label for="fur">Fur:</label>
+    <input type="text" id="fur" placeholder="none" value="none">
+</div>
+
+<div class="form-group">
+    <label for="ears">Ears:</label>
+    <input type="text" id="ears" placeholder="none" value="none">
+</div>
+
+<div class="form-group">
+    <label for="hat">Hat:</label>
+    <input type="text" id="hat" placeholder="none" value="none">
+</div>
+
+<div class="form-group">
+    <label for="mouth">Head:</label>
+    <input type="text" id="mouth" placeholder="none" value="none">
+</div>
+
+<div class="form-group">
+    <label for="eyes">Eyes:</label>
+    <input type="text" id="eyes" placeholder="none" value="none">
+</div>
+
+<div class="form-group">
+    <label for="hand">Hand:</label>
+    <input type="text" id="hand" placeholder="none" value="none">
+</div>
+
+<div class="form-group">
+    <label for="glasses">Glasses:</label>
+    <input type="text" id="glasses" placeholder="none" value="none">
+</div>
+
+<div class="form-group2">
+	<button onclick="updateCharacter()">Load Character</button>
+<div>
+
+<div class="alignL">
+	<div>
+		<div class="image-container" id="nft">
+		</div>
+	</div>
+	<div>
+		<div class="character-container" id="characterContainer">
+		</div>
+	</div>
+</div>
+
+<script>
+    const baseUrl = 'https://d31ss916pli4td.cloudfront.net/game/avatars/subwayrats/';
+	let nftURL='';
+
+    function updateCharacter() {
+        const parts = ['arm', 'fur', 'ears', 'hat', 'mouth', 'eyes', 'hand', 'glasses'];
+        const properties = [
+			document.getElementById('fur').value.toLowerCase(),
+            document.getElementById('fur').value.toLowerCase(),
+            document.getElementById('ears').value.toLowerCase(),
+            document.getElementById('hat').value.toLowerCase(),
+            document.getElementById('mouth').value.toLowerCase(),
+            document.getElementById('eyes').value.toLowerCase(),
+			document.getElementById('hand').value.toLowerCase(),
+			document.getElementById('glasses').value.toLowerCase()
+        ];
+
+        const characterContainer = document.getElementById('characterContainer');
+        characterContainer.innerHTML = ''; 
+		
+		const nftContainer = document.getElementById('nft');
+        nftContainer.innerHTML = ''; 
+
+        parts.forEach((part, index) => {
+			const propertyValue = properties[index];
+    
+			if (propertyValue) { 
+				const img = document.createElement('img');
+				img.src = `${baseUrl}${part}/${properties[index]}.png?v2`;
+				img.alt = part;
+				img.className = 'character-layer';
+				characterContainer.appendChild(img);
+			}
+        });
+		
+		const nftImg = document.createElement('img');
+		nftImg.src = nftURL;
+		nftImg.alt = "nft";
+		nftImg.className = 'image';
+		nftContainer.appendChild(nftImg);
+    }
+	
+	function loadCharacter() {
+        const tokenId = document.getElementById('tokenId').value;
+		const apiUrl = `https://corsproxy.io/?https://api.nft-stats.com/asset/0x696383fc9c5c8568c2e7af8731279b58b9201394/${tokenId}`;
+
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                const traits = data.asset.traits;
+				
+				console.log(traits);
+
+                // Populate textboxes with trait properties
+                document.getElementById('fur').value = getTraitValue(traits, 'Fur');
+                document.getElementById('ears').value = getTraitValue(traits, 'Ears');
+                document.getElementById('hat').value = getTraitValue(traits, 'Hat');
+                document.getElementById('mouth').value = getTraitValue(traits, 'Mouth');
+				document.getElementById('eyes').value = getTraitValue(traits, 'Eyes');
+                document.getElementById('hand').value = getTraitValue(traits, 'Hand');
+                document.getElementById('glasses').value = getTraitValue(traits, 'Glasses');
+            
+				nftURL=data.asset.image_url;
+			})
+            .catch(error => console.error('Error fetching data:', error));
+	}
+
+	function getTraitValue(traits, traitType) {
+		const trait = traits.find(t => t.trait_type === traitType);
+		return trait ? trait.value.replace(/\s/g, '').replace('-', '').replace('&', '').toLowerCase() : '';
+	}
+	
+</script>
+
+</body>
+</html>
