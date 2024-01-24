@@ -8,8 +8,8 @@
     <style>
         .character-container {
             position: relative;
-            width: 100%; 
-            height: auto; 
+            width: 350px; 
+            height: 350px; 
 			overflow: hidden;
         }
 
@@ -173,7 +173,9 @@
 				document.getElementById('mask').value = getTraitValue(traits, 'Mask');
                 document.getElementById('headwear').value = getTraitValue(traits, 'Headwear');
             
-				nftURL=data.asset.image_url;
+				nftURL=data.asset.collection.image_url;
+				
+				console.log(nftURL);
 			})
             .catch(error => console.error('Error fetching data:', error));
 	}
